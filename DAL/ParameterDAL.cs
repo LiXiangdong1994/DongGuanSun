@@ -53,7 +53,7 @@ namespace DAL
         //返回DataSet
         public static DataSet selectDepartmentsSet()
         {
-            string sql = "select S_UserInFo.UID,S_UserInFo.UserID,S_UserInFo.DeptID,(select C_Code.CodeName from C_Code where C_Code.OID=S_UserInFo.DeptID ) as DepartmentName from S_UserInFo where S_UserInFo.Power=0";
+            string sql = "select S_UserInFo.UID,S_UserInFo.UserID ,S_UserInFo.DeptID,vwC_Code.CodeName as DepartmentName from S_UserInFo ,vwC_Code where Power=0 and vwC_Code.OID=S_UserInFo.DeptID";
             sql = string.Format(sql);
             try
             {

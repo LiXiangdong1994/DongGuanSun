@@ -42,7 +42,7 @@
 		<script src="../assets/js/ace-extra.js"></script>
 
     <style>
-      #UpdateReplyMemo,#UpdateMemo{
+      #UpdateReplyMemo,#UpdateMemo,#UploadFile{
           resize: none;
       }
          .gridView th{
@@ -52,7 +52,7 @@
         #Search,#ModifyRID,#UserPower,#UserDept ,
         #IfAddFinishDate,#IfAddDepartment,
         #ModifyAssignID,#SetDeptCharge,
-        #UpdateAssignID,#ModiyRID,#ModifyMxID{
+        #UpdateAssignID,#ModiyRID,#ModifyMxID,#ModifyMxID2,#SetDeptCharge2,#ModifySuperiseAssignID{
             display:none;
         }
        .layui-form-label {
@@ -70,7 +70,7 @@
             
         }
       #DeptSearch,#UrgencySerach,#SuperviseTypeSearch,#BSateSearch{
-          width:159px;
+          width:175px;
             height:40px;
       }
         #SetDepartment {
@@ -83,6 +83,21 @@
     margin-left: 87px;
     min-height: 36px;
 }
+
+        .mlength
+  {
+    height:200px;
+    overflow: hidden;
+	word-wrap:break-word;
+	white-space:pre-wrap;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 3;
+  }
+        /*.layui-layer-content{
+            display:none;
+        }*/
     </style>
       <script>
         function SetStyle() {
@@ -108,6 +123,8 @@
                 });
         })
         }
+
+
         </script>
 </head>
 <body style="background-color:white;">
@@ -194,7 +211,7 @@
                         <asp:BoundField DataField="BigTitle" HeaderText="议题" ItemStyle-Width="100"/>
                         <asp:TemplateField HeaderText="议题操作" ShowHeader="False" ItemStyle-Width="100">
                             <ItemTemplate>
-                                <asp:LinkButton  ID="ModifyBigTitle" CommandName="openModifyBigTitleModal"  CommandArgument='<%#Eval("RID")+","+Eval("BigTitle")%>' Text="编辑议题" runat="server"></asp:LinkButton>
+                                <asp:LinkButton  ID="ModifyBigTitle" CommandName="openModifyBigTitleModal"  CommandArgument='<%#Eval("RID")+","+Eval("BigTitle")+","+Eval("MxID")%>' Text="编辑议题" runat="server"></asp:LinkButton>
                                 <hr />
                                 <asp:LinkButton  ID="DeleteBigTitle" CommandName="DeleteBigTitle_Click"  CommandArgument='<%#Eval("RID")%>' Text="删除议题" runat="server"></asp:LinkButton>
                             </ItemTemplate>
@@ -211,23 +228,28 @@
                                     <ItemTemplate>
                                          <asp:LinkButton  ID="Modify" CommandName="openModifySuperviseMxModal"  CommandArgument='<%#Eval("AssignID")+","+Eval("RID")+","+Eval("BigTitle")%>' Text="添加步骤" runat="server"></asp:LinkButton>
                                          <hr />
-                                         <asp:LinkButton  CommandName="openModifySmallTitleModal"  CommandArgument='<%#Eval("MxID")+","+Eval("BigTitle")+","+Eval("SmallTitle")%>' Text="编辑步骤" runat="server"></asp:LinkButton>
+                                         <asp:LinkButton  CommandName="openModifySmallTitleModal"  CommandArgument='<%#Eval("MxID")+","+Eval("BigTitle")+","+Eval("SmallTitle")+","+Eval("RID")+","+Eval("AssignID")%>' Text="编辑步骤" runat="server"></asp:LinkButton>
                                          <hr />
                                         <asp:LinkButton  CommandName="DeleteSmallTitle_Click"  CommandArgument='<%#Eval("MxID")+","+Eval("AssignID")%>' Text="删除步骤" runat="server"></asp:LinkButton>
                                     </ItemTemplate>
                                 </asp:TemplateField>
                                 <asp:BoundField DataField="FinishDate" HeaderText="完成时限" ItemStyle-HorizontalAlign="Center"/>
-                                <asp:BoundField DataField="ReplyMemo" HeaderText="跟进情况" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="300"/>
+                                <asp:BoundField DataField="ReplyMemo" HeaderText="跟进情况" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="350" ItemStyle-CssClass="mlength"/>
                                 <asp:TemplateField HeaderText="处理操作" ShowHeader="False" ItemStyle-HorizontalAlign="Center"  ItemStyle-Width="80">
                                     <ItemTemplate>
                                         <asp:LinkButton  ID="DealSupervise" CommandName="openDealSuperviseMxModal"  CommandArgument='<%#Eval("AssignID")+","+Eval("BigTitle")+","+Eval("SmallTitle")+","+Eval("ReplyMemo")+","+Eval("Memo")%>' Text="更新跟进情况" runat="server"></asp:LinkButton>
                                     </ItemTemplate>
                                 </asp:TemplateField>
-                                 <asp:BoundField DataField="DeptName" HeaderText="跟进科部" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="80"/>
+                                 <asp:BoundField DataField="bing" HeaderText="跟进科部" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="80"/>
                                  <asp:BoundField DataField="AssignNo" HeaderText="跟进人员" ItemStyle-HorizontalAlign="Center"/>
                                 <asp:BoundField DataField="Memo" HeaderText="存在问题及推进思路" ItemStyle-HorizontalAlign="Center"/>
                                  <asp:BoundField DataField="bSate" HeaderText="办理状态" ItemStyle-HorizontalAlign="Center"/>
                                  <asp:BoundField DataField="MxID" HeaderText="任务ID" ItemStyle-HorizontalAlign="Center"/>
+                                 <asp:TemplateField HeaderText="附件" ShowHeader="False" ItemStyle-HorizontalAlign="Center"  ItemStyle-Width="80">
+                                    <ItemTemplate>
+                                        <asp:LinkButton  ID="SearchFiles" CommandName="openSearchFiles"  CommandArgument='<%#Eval("AssignID")%>' Text="查看附件" runat="server"></asp:LinkButton>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
                             </Columns>
                             <PagerSettings Mode="NumericFirstLast" />
                             <PagerStyle HorizontalAlign="Right" VerticalAlign="Middle" />
@@ -236,52 +258,6 @@
                 </tr>
             </table> 
     </div>
-     <%--   虚假列表  用于导出--%>
-        <table class="layui-table">   
-        <tr>
-            <td>
-                <asp:GridView ID="gridView3"  CssClass="gridView" runat="server" AutoGenerateColumns="False" Width="100%"
-                    AllowPaging="True" AllowSorting="True" OnRowDataBound="gridView_RowDataBound" OnPageIndexChanging="gridView_PageIndexChanging"
-                    CellPadding="5" BorderWidth="1px" PageSize="5"   OnRowCommand="GridView_RowCommand" >
-                    <Columns>
-                        <asp:BoundField HeaderText="序号" ></asp:BoundField> 
-                        <asp:BoundField DataField="BigTitle" HeaderText="议题" ItemStyle-Width="100"/>
-                                <asp:BoundField DataField="RID" HeaderText="议题ID"  ItemStyle-HorizontalAlign="Center"/>
-                                <asp:BoundField DataField="AssignID" HeaderText="分派ID" ItemStyle-HorizontalAlign="Center"/>
-                                <asp:BoundField DataField="Urgency" HeaderText="紧急程度" ItemStyle-HorizontalAlign="Center"/>
-                                <asp:BoundField DataField="SuperviseType" HeaderText="类型" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="80"/>
-                                <asp:TemplateField HeaderText="序号" InsertVisible="False" ItemStyle-HorizontalAlign="Center"> 
-                                    <ItemTemplate> <%#Container.DataItemIndex+1%></ItemTemplate> 
-                                </asp:TemplateField> 
-                                <asp:BoundField DataField="SmallTitle" HeaderText="跟进步骤" ItemStyle-HorizontalAlign="Center"/>
-                                <asp:TemplateField HeaderText="步骤操作" ShowHeader="False" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="100">
-                                    <ItemTemplate>
-                                         <asp:LinkButton  ID="Modify" CommandName="openModifySuperviseMxModal"  CommandArgument='<%#Eval("AssignID")+","+Eval("RID")+","+Eval("BigTitle")%>' Text="添加步骤" runat="server"></asp:LinkButton>
-                                         <hr />
-                                         <asp:LinkButton  CommandName="openModifySmallTitleModal"  CommandArgument='<%#Eval("MxID")+","+Eval("BigTitle")+","+Eval("SmallTitle")%>' Text="编辑步骤" runat="server"></asp:LinkButton>
-                                         <hr />
-                                        <asp:LinkButton  CommandName="DeleteSmallTitle_Click"  CommandArgument='<%#Eval("MxID")+","+Eval("AssignID")%>' Text="删除步骤" runat="server"></asp:LinkButton>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                                <asp:BoundField DataField="FinishDate" HeaderText="完成时限" ItemStyle-HorizontalAlign="Center"/>
-                                <asp:BoundField DataField="ReplyMemo" HeaderText="跟进情况" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="300"/>
-                                <asp:TemplateField HeaderText="处理操作" ShowHeader="False" ItemStyle-HorizontalAlign="Center"  ItemStyle-Width="80">
-                                    <ItemTemplate>
-                                        <asp:LinkButton  ID="DealSupervise" CommandName="openDealSuperviseMxModal"  CommandArgument='<%#Eval("AssignID")+","+Eval("BigTitle")+","+Eval("SmallTitle")+","+Eval("ReplyMemo")+","+Eval("Memo")%>' Text="更新跟进情况" runat="server"></asp:LinkButton>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                                 <asp:BoundField DataField="DeptName" HeaderText="跟进科部" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="80"/>
-                                 <asp:BoundField DataField="AssignNo" HeaderText="跟进人员" ItemStyle-HorizontalAlign="Center"/>
-                                <asp:BoundField DataField="Memo" HeaderText="存在问题及推进思路" ItemStyle-HorizontalAlign="Center"/>
-                                 <asp:BoundField DataField="bSate" HeaderText="办理状态" ItemStyle-HorizontalAlign="Center"/>
-                                 <asp:BoundField DataField="MxID" HeaderText="任务ID" ItemStyle-HorizontalAlign="Center"/>
-                            </Columns>
-                            <PagerSettings Mode="NumericFirstLast" />
-                            <PagerStyle HorizontalAlign="Right" VerticalAlign="Middle" />
-                        </asp:GridView>
-                        <asp:Label ID="Label4" runat="server" Visible="False" ForeColor="Red">没有数据！！</asp:Label></td>
-                </tr>
-            </table> 
         <%--添加议题的弹窗--%>
         <div class="modal fade" id="AddSuperviseModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -369,7 +345,8 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">议题名称</label>
                             <div class="layui-input-block">
-                                 <asp:TextBox type="text" id="ModiyRID"   lay-verify="required" lay-reqtext="议题不能为空" autocomplete="off" class="layui-input" runat="server"/>
+                                 <asp:TextBox type="text" id="ModiyRID"   lay-verify="required"  autocomplete="off" class="layui-input" runat="server"/>
+                                  <asp:TextBox type="text" id="ModifyMxID2"   lay-verify="required" lay-reqtext="议题不能为空" autocomplete="off" class="layui-input" runat="server"/>
                                 <asp:TextBox type="text" id="ModifyBigTitle2"   name="ModifyBigTitle2" lay-verify="required" lay-reqtext="议题不能为空" autocomplete="off" placeholder="请输入议题名称，必填" class="layui-input" runat="server"/>
                             </div>
                         </div>
@@ -383,30 +360,18 @@
                                 </asp:DropDownList>
                             </div>
                         </div>  
-                         <%--<div class="layui-form-item">
+                         <div class="layui-form-item">
                             <label class="layui-form-label">分派部门</label>
                             <div class="layui-input-block">
                                 <span class="span1" style="float: left;display: inline-block;">
-                                    <asp:TextBox type="text" name="SetDepartment" id="TextBox2"   autocomplete="off" class="layui-input" runat="server" disabled="disabled"  />
-                                    <asp:TextBox type="text" name="SetDeptCharge" id="TextBox3"   autocomplete="off" class="layui-input" runat="server" disabled="disabled"/>
+                                    <asp:TextBox type="text" name="SetDepartment2" id="SetDepartment2"   autocomplete="off" class="layui-input" runat="server" readonly="true"  />
+                                    <asp:TextBox type="text" name="SetDeptCharge2" id="SetDeptCharge2"   autocomplete="off" class="layui-input" runat="server"  readonly="true"/>
                                 </span>
                                 <span class="span2" style="float: left;display: inline-block;">
-                                     <Button  type="button" class="btn btn-primary"  OnClick="SetDepartment_Click()" id="Select">选择</Button>
+                                     <Button  type="button" class="btn btn-primary"  OnClick="SetDepartment_Click()" id="Select2">选择</Button>
                                 </span>
                             </div>
-                        </div>--%>
-                         <%--<div class="layui-form-item" >
-                            <label class="layui-form-label">跟进步骤</label>
-                            <div class="layui-input-block">
-                                <asp:TextBox type="text" id="TextBox4"   name="AddTitle" lay-verify="required" autocomplete="off" placeholder="请输入任务内容，可不填" class="layui-input" runat="server"/>
-                            </div>
-                        </div> 
-                         <div class="layui-form-item"  id="IfAddFinishDate">
-                            <label class="layui-form-label">完成时限</label>
-                            <div class="layui-input-block">
-                                <asp:TextBox type="text" name="AddFinishDate" id="TextBox5" lay-verify="AddFinishDate" placeholder="yyyy-MM-dd"  autocomplete="off" class="layui-input" runat="server"/>
-                            </div>
-                        </div> --%>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <asp:Button type="button" class="btn btn-default" data-dismiss="modal" Text="关闭" runat="server"></asp:Button>
@@ -415,7 +380,7 @@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal -->
         </div>
-         <%--分配任务的部门弹窗--%>
+         <%--部门列表弹窗--%>
         <div class="modal fade" id="SetDepartmentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -437,8 +402,8 @@
                                     <ItemTemplate>
                                           <asp:CheckBox ID="CheckBox1" runat="server"/>
                                     </ItemTemplate>
-                                    <HeaderTemplate>
-                                        <asp:CheckBox ID="CheckBox2" runat="server" AutoPostBack="True" />
+                                     <HeaderTemplate>
+                                       <input id="checkedAllBox" type="checkbox" /> 
                                     </HeaderTemplate>
                                 </asp:TemplateField>
                                 <asp:BoundField DataField="DeptID" HeaderText="编号" SortExpression="OID" />
@@ -461,7 +426,7 @@
             </div><!-- /.modal -->
        </div>
         
-         <%--修改任务分派的弹窗（添加任务）--%>
+         <%--添加任务的弹窗--%>
         <div class="modal fade" id="ModifySuperviseMxModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -514,12 +479,14 @@
                         <h4 class="modal-title">编辑任务</h4>
                     </div>
                         <div class="modal-body">
-                             <div class="layui-form-item">
-                            <label class="layui-form-label">议题</label>
-                            <div class="layui-input-block">
-                                <asp:TextBox type="text" id="ModifyBigTitle3"  disabled="disabled"  name="ModifyBigTitle" lay-verify="required"  autocomplete="off" class="layui-input" runat="server"/>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">议题</label>
+                                <div class="layui-input-block">
+                                      <asp:TextBox type="text" id="ModifySuperiseAssignID"  readonly="false" name="ModifyBigTitle" lay-verify="required"  autocomplete="off" class="layui-input" runat="server"/>
+                                      <asp:TextBox type="text" id="ModifyRID3"  readonly="false" name="ModifyBigTitle" lay-verify="required"  autocomplete="off" class="layui-input" runat="server"/>
+                                      <asp:TextBox type="text" id="ModifyBigTitle3"  readonly="false"  name="ModifyBigTitle" lay-verify="required"  autocomplete="off" class="layui-input" runat="server"/>
+                                </div>
                             </div>
-                        </div>
                             <div class="layui-form-item">
                                 <label class="layui-form-label">任务内容</label>
                                 <div class="layui-input-block">
@@ -533,13 +500,13 @@
                                   <asp:TextBox type="text"  id="ModifyFinishDate2" lay-verify="ModifyFinishDate"  autocomplete="off" class="layui-input" runat="server"/>
                                 </div>
                             </div>
-                        <%--    <div class="layui-form-item">
+                            <div class="layui-form-item">
                                 <label class="layui-form-label">分派员工</label>
                                 <div class="layui-input-block">
-                                      <asp:TextBox type="text" name="ModifySetStaff2" id="TextBox6"  autocomplete="off" class="layui-input" runat="server" disabled="disabled" />
+                                      <asp:TextBox type="text" name="ModifySetStaff2" id="ModifySetStaff2"  autocomplete="off" class="layui-input" runat="server" readonly="false" />
                                 </div>
                                 <Button  type="button" class="btn btn-primary" OnClick="openSetStaffModal()">选择</Button>
-                             </div>--%>
+                             </div>
                         </div>
                     <div class="modal-footer">
                         <asp:Button type="button" class="btn btn-default" data-dismiss="modal" Text="关闭" runat="server"></asp:Button>
@@ -567,10 +534,10 @@
                             <Columns>
                                 <asp:TemplateField>
                                     <ItemTemplate>
-                                          <asp:CheckBox ID="CheckBox1" runat="server"/>
+                                          <asp:CheckBox ID="CheckBox2" runat="server"/>
                                     </ItemTemplate>
                                     <HeaderTemplate>
-                                        <asp:CheckBox ID="CheckBox2" runat="server" AutoPostBack="True" />
+                                        <asp:CheckBox ID="CheckAll2" runat="server"/>
                                     </HeaderTemplate>
                                 </asp:TemplateField>
                                 <asp:BoundField DataField="UID" HeaderText="编号" SortExpression="UID" />
@@ -619,13 +586,13 @@
                             <div class="layui-form-item">
                                 <label class="layui-form-label">完成情况</label>
                                 <div class="layui-input-block">
-                                   <textarea id="UpdateReplyMemo" name="UpdateReplyMemo" cols="58" style="height: 102px" runat="Server"/>
+                                   <textarea id="UpdateReplyMemo" name="UpdateReplyMemo" cols="53" style="height: 102px" runat="Server"/>
                                 </div>
                             </div> 
                             <div class="layui-form-item">
                                 <label class="layui-form-label">存在问题及推进思路</label>
                                 <div class="layui-input-block">
-                                  <textarea id="UpdateMemo" name="UpdateMemo" cols="58" style="height: 102px" runat="Server"/>
+                                  <textarea id="UpdateMemo" name="UpdateMemo" cols="53" style="height: 102px" runat="Server"/>
                                 </div>
                             </div> 
                             <div class="layui-form-item">
@@ -635,13 +602,70 @@
                                      <asp:ListItem Value="1" Text="需协调"></asp:ListItem>
                                      <asp:ListItem Value="2" Text="已完成"></asp:ListItem>
                                 </asp:DropDownList>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">已上传附件</label>
+                                 <textarea id="UploadFile" name="UploadFile" cols="50" runat="Server" style="height: 118px; margin: 0px; width: 424px;" readonly="readonly"/>
+                            </div>
+                           <%-- 上传附件--%>
+                            <div class="layui-upload">
+                              <button type="button" class="layui-btn layui-btn-normal" id="testList">选择文件</button> 
+                              <div class="layui-upload-list">
+                                <table class="layui-table">
+                                  <thead>
+                                    <tr><th>文件名</th>
+                                    <th>大小</th>
+                                    <th>状态</th>
+                                  </tr></thead>
+                                  <tbody id="demoList"></tbody>
+                                </table>
+                              </div>
+                              <button type="button" class="layui-btn" id="testListAction">开始上传</button>
                             </div> 
-                           
-
                         </div>
                     <div class="modal-footer">
                         <asp:Button type="button" class="btn btn-default" data-dismiss="modal" Text="关闭" runat="server"></asp:Button>
                         <asp:Button type="button" class="btn btn-primary" Text="确认" runat="server" OnClick="SaveDealSuperviseAssign_Click"></asp:Button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+      <%--  附件列表弹窗--%>
+        <div class="modal fade" id="FileModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content" style="width:1000px">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">附件列表</h4>
+                    </div>
+                    <div class="modal-body">
+                         <table class="layui-table">   
+                    <tr>
+                        <td>
+                        <asp:GridView ID="FileGridView"  CssClass="gridView" runat="server" AutoGenerateColumns="False" Width="100%"
+                    AllowPaging="True" AllowSorting="True" OnRowCommand="FileGridView_RowCommand" OnRowDataBound="FileGridView_RowDataBound"
+                    CellPadding="5" BorderWidth="1px" PageSize="5" >
+                    <Columns>
+                        <asp:BoundField HeaderText="序号"  ItemStyle-HorizontalAlign="Center"></asp:BoundField> 
+                        <asp:BoundField DataField="ID" HeaderText="ID" ItemStyle-Width="200"/>
+                        <asp:BoundField DataField="Path" HeaderText="文件名" ItemStyle-Width="200" ItemStyle-HorizontalAlign="Center"/>
+                         <asp:BoundField DataField="UserID" HeaderText="上传人" ItemStyle-Width="200" ItemStyle-HorizontalAlign="Center"/>
+                         <asp:BoundField DataField="UploadTime" HeaderText="上传时间" ItemStyle-Width="200" ItemStyle-HorizontalAlign="Center"/>
+                        <asp:TemplateField HeaderText="操作" ShowHeader="False" ItemStyle-Width="200"  ItemStyle-HorizontalAlign="Center">
+                            <ItemTemplate>
+                                <asp:LinkButton  ID="DownLoadFile" CommandName="DownLoadFile_Click"  CommandArgument='<%#Eval("Path")%>' Text="下载附件" runat="server"></asp:LinkButton>
+
+                              <asp:LinkButton  ID="DeleteFile" CommandName="DeleteFile_Click"  CommandArgument='<%#Eval("ID")+","+Eval("UserID")%>' Text="删除附件" runat="server"></asp:LinkButton>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        </Columns>
+                        </asp:GridView>
+                        </td>
+                     </tr>
+                   </table>
+                    </div>
+                    <div class="modal-footer">
+                        <asp:Button type="button" class="btn btn-default" data-dismiss="modal" Text="关闭" runat="server"></asp:Button>
                     </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal -->
@@ -698,7 +722,6 @@ $(function () {
              $("#IfAddDepartment").attr("style", "display:none");
          }
      })
-
      $('.Search').bind('input propertychange', function() {  
          __doPostBack('Search');
          return false;
@@ -718,7 +741,7 @@ $(function () {
      var department;
      var str = "";
      var strDept = "";
-     for (var i = 0; i < gridView.rows.length; i++) {
+     for (var i = 1; i < gridView.rows.length; i++) {
          var cb = gridView.rows[i].cells[0].children[0];
          if (cb.checked) {
              department = gridView.rows[i].cells[2].innerText;
@@ -737,12 +760,12 @@ $(function () {
              backdrop: 'static'
          })
      }
-     else if ($('#ModifySuperviseMxModal').css('display') == "block") {
-         $("#ModifySetDepartment").val(str);
-         $("#ModifySetDeptCharge").val(strDept);
+     else if ($('#ModifyBigTitleModal').css('display') == "block") {
+         $("#SetDepartment2").val(str);
+         $("#SetDeptCharge2").val(strDept);
          $('#SetDepartmentModal').modal('hide');//隐藏modal
 
-         $('#ModifySuperviseMxModal').modal({
+         $('#ModifyBigTitleModal').modal({
              show: true,
              backdrop: 'static'
          })
@@ -750,13 +773,14 @@ $(function () {
  }
 //员工列表打开
  function openSetStaffModal() {
+     $("#ModifySetStaff2").val("");
      $('#SetStaffModal').modal({
          show: true,
          backdrop: 'static'
      });
  }
 
-
+ 
  //选择员工
  function SureSetStaff_Click() {
      var gridView = document.getElementById("gridView1");
@@ -766,18 +790,116 @@ $(function () {
      for (var i = 0; i < gridView.rows.length; i++) {
          var cb = gridView.rows[i].cells[0].children[0];
          if (cb.checked) {
-             department = gridView.rows[i].cells[2].innerText;
+             department = gridView.rows[i].cells[3].innerText;
              str += department + ",";
          }
      }
+     if ($('#ModifySuperviseMxModal').css('display') == "block") {
      $("#ModifySetStaff").val(str);
      $('#SetStaffModal').modal('hide');//隐藏modal
 
-     $('#AddSuperviseAssignModal').modal({
+     $('#ModifySuperviseMxModal').modal({
          show: true,
          backdrop: 'static'
      })
+     } else if ($('#ModifySmallTitleModal').css('display') == "block") {
+         $("#ModifySetStaff2").val(str);
+         $('#SetStaffModal').modal('hide');//隐藏modal
+         $('#ModifySmallTitleModal').modal({
+             show: true,
+             backdrop: 'static'
+         })
+     }
  }
+ var $checkedAllBox = $('#checkedAllBox')
+ $checkedAllBox.click(function () {
+     var gridView = document.getElementById("gridView2");
+    
+     for (var i = 0; i < gridView.rows.length; i++) {
+         if (checkedAllBox.checked == false) {
+             $("#gridView2_CheckBox1_" + i + "").prop('checked', false);
+         }
+         else {
+             $("#gridView2_CheckBox1_" + i + "").prop('checked', true);
+         }
+     }
+ })
+ var $checkedAllBox2 = $('#gridView1_CheckAll2')
+ $checkedAllBox2.click(function () {
+     var gridView = document.getElementById("gridView1");
+     alret("");
+     for (var i = 0; i < gridView.rows.length; i++) {
+         if (checkedAllBox2.checked == false) {
+             $("#gridView1_CheckBox2_" + i + "").prop('checked', false);
+         }
+         else {
+             $("#gridView1_CheckBox2_" + i + "").prop('checked', true);
+         }
+     }
+ })
 
+ layui.use('upload', function(){
+     var upload = layui.upload;
+     var id = $("#UpdateAssignID").val();
+     var userID='<%=Session["UserID"].ToString()%>';
+    var demoListView = $('#demoList')
+    , uploadListIns = upload.render({
+        elem: '#testList'
+     , url: '<%=ResolveUrl("~/Admin/Upload.ashx")%>'
+     , accept: 'file'
+     , multiple: true
+     , auto: false
+     , bindAction: '#testListAction'
+     ,before: function(obj){
+         this.data = { 'ID': id, 'UserID': userID };//关键代码
+     } 
+     , choose: function (obj) {
+         var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
+         //读取本地文件
+         obj.preview(function (index, file, result) {
+             var tr = $(['<tr id="upload-' + index + '">'
+               , '<td>' + file.name + '</td>'
+               , '<td>' + (file.size / 1014).toFixed(1) + 'kb</td>'
+               , '<td>等待上传</td>'
+               , '<td>'
+                 , '<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>'
+                 , '<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>'
+               , '</td>'
+             , '</tr>'].join(''));
+
+             //单个重传
+             tr.find('.demo-reload').on('click', function () {
+                 obj.upload(index, file);
+             });
+
+             //删除
+             tr.find('.demo-delete').on('click', function () {
+                 delete files[index]; //删除对应的文件
+                 tr.remove();
+                 uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+             });
+
+             demoListView.append(tr);
+         });
+     }
+     , done: function (res, index, upload) {
+         if (res.code == 0) { //上传成功
+             var tr = demoListView.find('tr#upload-' + index)
+             , tds = tr.children();
+             tds.eq(2).html('<span style="color: #5FB878;">上传成功</span>');
+             tds.eq(3).html(''); //清空操作
+             return delete this.files[index]; //删除文件队列已经上传成功的文件
+         }
+         this.error(index, upload);
+     }
+     , error: function (index, upload) {
+         var tr = demoListView.find('tr#upload-' + index)
+           , tds = tr.children();
+         tds.eq(2).html('<span style="color: #5FB878;">上传成功</span>');
+         tds.eq(3).html(''); //清空操作
+         return delete this.files[index]; //删除文件队列已经上传成功的文件
+     }
+    });
+ })
 </script>
 

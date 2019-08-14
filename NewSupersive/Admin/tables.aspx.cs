@@ -11,6 +11,7 @@ using System.Collections;
 using System.Data.SqlClient;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Web.Services;
 
 namespace NewSupersive.Admin
 {
@@ -87,7 +88,7 @@ namespace NewSupersive.Admin
             int urgencySerach = int.Parse(UrgencySerach.SelectedValue);
             int superviseTypeSearch = int.Parse(SuperviseTypeSearch.SelectedValue.ToString());
             int bSateSearch = int.Parse(BSateSearch.SelectedValue.ToString());
-            if (superviseSearch.Length!=0)
+            if (superviseSearch.Length != 0)
             {
                 listWhere.Add("BigTitle like '" + '%' + superviseSearch + "'");
             }
@@ -132,10 +133,18 @@ namespace NewSupersive.Admin
 
             SuperviseAssignBLL superviseAssignBLL = new SuperviseAssignBLL();
             DataSet ds = new DataSet();
-            ds = superviseAssignBLL.FindSuperviseAssignByMore(listWhere);
-            DataView dv = ds.Tables[0].DefaultView;
-            gridView.DataSource = dv;
-            gridView.DataBind();
+            try
+            {
+                ds = superviseAssignBLL.FindSuperviseAssignByMore(listWhere);
+                DataView dv = ds.Tables[0].DefaultView;
+                gridView.DataSource = dv;
+                gridView.DataBind();
+            }
+            catch (Exception ex)
+            {
+                Response.Write("<script language='javascript'>alert('当前无任务!')</script>");
+            }
+
         }
         #endregion
         //合并单元格 合并某一列所有行
@@ -258,7 +267,7 @@ namespace NewSupersive.Admin
         #region
         protected void gridView_RowDataBound(object sender, GridViewRowEventArgs e)
         {
-            S_UserInFo user =(S_UserInFo) Session["User"];
+            S_UserInFo user = (S_UserInFo)Session["User"];
             //动态序号
             if (e.Row.RowIndex != -1)
             {
@@ -277,7 +286,7 @@ namespace NewSupersive.Admin
                 //科部 不操作议题
                 if (user.Memo != "办公室")
                 {
-                        e.Row.Cells[2].Visible = false;
+                    e.Row.Cells[2].Visible = false;
                 }
                 //科部人员 不操作议题和任务 只处理任务
                 if (user.Power != 0 && user.Memo != "办公室")
@@ -292,19 +301,14 @@ namespace NewSupersive.Admin
 
             for (int i = 0; i < gridView.Rows.Count; i++)
             {
-                
+
                 ////Page.ClientScript.RegisterStartupScript(this.GetType(), "", "SetStyle()", true);
                 //gridView.Rows[i].Cells[2].Attributes.Add("onmouseover", "ShowAndHide()");
                 //隐藏信息
                 for (int j = 0; j < gridView.Rows[i].Cells.Count; j++)
                 {
                     string Str = gridView.Rows[i].Cells[j].Text; //第二列内容
-                    if (Str.Length > 20) //第二列内容大于20个
-                    {
-                        gridView.Rows[i].Cells[j].Text = Str.Substring(0, 100) + "..."; //截取20个显示，其他用“...”号代替
-                        gridView.Rows[i].Cells[j].ToolTip = Str;//鼠标放上去显示全部信息
-                    }
-
+                    gridView.Rows[i].Cells[j].ToolTip = Str;//鼠标放上去显示全部信息
                 }
                 //状态显示信息
                 if (gridView.Rows[i].Cells[16].Text == "0")
@@ -367,10 +371,10 @@ namespace NewSupersive.Admin
             }
         }
         //翻页
-            #region
+        #region
         protected void gridView_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
-             gridView.PageIndex = e.NewPageIndex;
+            gridView.PageIndex = e.NewPageIndex;
             Page_Load(sender, e);
         }
         #endregion
@@ -401,51 +405,52 @@ namespace NewSupersive.Admin
                 supervise.SuperviseType = int.Parse(AddTypeList.SelectedValue);
                 supervise.Title = Request.Params["AddBigTitle"];
                 supervise.Urgency = int.Parse(AddUrgencyList.SelectedValue);
-                if (supervise.Title == null|| supervise.Title == "") {
+                if (supervise.Title == null || supervise.Title == "")
+                {
                     Page.ClientScript.RegisterStartupScript(this.GetType(), "", "SetStyle()", true);
                     return;
                 }
                 else
                 {
-                try
-                {
-                    supervise.Mender = user.UserID;
-                }
-                catch (Exception ex)
-                {
-                    Response.Redirect("Login.aspx");
-                }
-                supervise.MendDate = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd"));
-
-                num = superviseBLL.AddSupervise(supervise);//新建议题后
-                R_Supervise supervise2 = superviseBLL.FindSuperviseByTitle(supervise.Title);//新增议题后 按议题内容查找刚刚添加的议题，进行任务添加
-
-
-
-                R_SuperviseAssign superviseAssign = new R_SuperviseAssign();
-                superviseAssign.RID = supervise2.RID;
-                superviseAssign.MxID = 0;
-                superviseAssign.ReplyMemo = "";
-                superviseAssign.bSate = 0;
-                superviseAssign.Memo = "";
-                superviseAssign.Mender = user.UserID;
-                superviseAssign.MendDate = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd"));
-                if (str == "" || str == null)
-                {
-                    superviseAssign.AssignNo = "未分配";
-                    num = superviseAssignBLL.AddsuperviseAssign(superviseAssign);
-                }
-                else
-                {
-                    string srt2 = str.Trim(',');
-                    string[] sArray = srt2.Split(',');
-                    foreach (string i in sArray)
+                    try
                     {
-                        superviseAssign.AssignNo = i.ToString();
+                        supervise.Mender = user.UserID;
+                    }
+                    catch (Exception ex)
+                    {
+                        Response.Redirect("Login.aspx");
+                    }
+                    supervise.MendDate = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd"));
+
+                    num = superviseBLL.AddSupervise(supervise);//新建议题后
+                    R_Supervise supervise2 = superviseBLL.FindSuperviseByTitle(supervise.Title);//新增议题后 按议题内容查找刚刚添加的议题，进行任务添加
+
+
+
+                    R_SuperviseAssign superviseAssign = new R_SuperviseAssign();
+                    superviseAssign.RID = supervise2.RID;
+                    superviseAssign.MxID = 0;
+                    superviseAssign.ReplyMemo = "";
+                    superviseAssign.bSate = 0;
+                    superviseAssign.Memo = "";
+                    superviseAssign.Mender = user.UserID;
+                    superviseAssign.MendDate = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd"));
+                    if (str == "" || str == null)
+                    {
+                        superviseAssign.AssignNo = "";
                         num = superviseAssignBLL.AddsuperviseAssign(superviseAssign);
                     }
+                    else
+                    {
+                        string srt2 = str.Trim(',');
+                        string[] sArray = srt2.Split(',');
+                        foreach (string i in sArray)
+                        {
+                            superviseAssign.AssignNo = i.ToString();
+                            num = superviseAssignBLL.AddsuperviseAssign(superviseAssign);
+                        }
+                    }
                 }
-            }
             }
             else if (Request.Params["AddSmallTitle"] != "" || Request.Params["AddSmallTitle"] != null)//如果要添加小任务
             {
@@ -492,7 +497,7 @@ namespace NewSupersive.Admin
                 superviseAssign.MendDate = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd"));
                 if (str == "" || str == null)
                 {
-                    superviseAssign.AssignNo = "未分配";
+                    superviseAssign.AssignNo = "";
                     num = superviseAssignBLL.AddsuperviseAssign(superviseAssign);
                 }
                 else
@@ -527,11 +532,29 @@ namespace NewSupersive.Admin
             if (e.CommandName == "openModifyBigTitleModal")
             {
                 SuperviseMxBLL superviseMxBLL = new SuperviseMxBLL();
+                SuperviseAssignBLL superviseAssignBLL = new SuperviseAssignBLL();
                 string[] commandArgument = e.CommandArgument.ToString().Split(',');
                 int RID = int.Parse(commandArgument[0]);
+                int MxID = int.Parse(commandArgument[2]);
                 ModiyRID.Text = RID.ToString();
+                ModifyMxID2.Text = MxID.ToString();
                 SuperviseBLL superviseBLL = new SuperviseBLL();
                 R_Supervise supervise = superviseBLL.FindSupervise(RID);
+                SqlDataReader read = superviseAssignBLL.FindSuperviseAssignByRID(RID);
+                string AssignNoStr = "";
+                string DeptNameStr = "";
+                while (read.Read())
+                {
+                    if (read["AssignNo"].ToString() != "")
+                    {
+                        AssignNoStr += read["AssignNo"].ToString() + ",";
+                        Session["OldAssignNo"] = AssignNoStr;
+                    }
+                    Session["OldAssignNo"] = AssignNoStr;
+                    DeptNameStr += read["DeptName"].ToString() + ",";
+                }
+                SetDepartment2.Text = DeptNameStr;
+                SetDeptCharge2.Text = AssignNoStr;
                 ModifyBigTitle2.Text = supervise.Title;
                 RegisterJS(@"
                   $('#ModifyBigTitleModal').modal({
@@ -576,15 +599,32 @@ namespace NewSupersive.Admin
                     backdrop: 'static'
                 });", this);
             }
-            //更新任务弹窗
-            else if (e.CommandName== "openModifySmallTitleModal") {
+            //点击修改步骤
+            else if (e.CommandName == "openModifySmallTitleModal")
+            {
                 string[] commandArgument = e.CommandArgument.ToString().Split(',');
                 int MxID = int.Parse(commandArgument[0]);
                 string bigTitle = commandArgument[1];
                 string smallTitle = commandArgument[2];
+                string AssignID = commandArgument[4];
+                string RID = commandArgument[3];
                 ModifyBigTitle3.Text = bigTitle;
                 ModifySmallTitle.Text = smallTitle;
                 ModifyMxID.Text = MxID.ToString();
+                ModifyRID3.Text = RID;
+                ModifySuperiseAssignID.Text = AssignID;
+                SuperviseAssignBLL superviseAssignBLL = new SuperviseAssignBLL();
+                SqlDataReader read = superviseAssignBLL.FindSuperviseAssignByMxID(MxID);
+                string AssignNoStr = "";
+                while (read.Read())
+                {
+                    if (read["AssignNo"].ToString() != "")
+                    {
+                        AssignNoStr += read["AssignNo"].ToString() + ",";
+                        Session["OldStaff"] = AssignNoStr;
+                    }
+                }
+                ModifySetStaff2.Text = AssignNoStr;
                 SuperviseMxBLL superviseMxBLL = new SuperviseMxBLL();
                 RegisterJS(@"
                   $('#ModifySmallTitleModal').modal({
@@ -619,18 +659,46 @@ namespace NewSupersive.Admin
                 string smallTitle = commandArgument[2];
                 string updateReplyMemo = commandArgument[3];
                 string updateMemo = commandArgument[4];
+                UploadBLL uploadBLL = new UploadBLL();
+                string UserID = Session["UserID"].ToString();
+                SqlDataReader read=uploadBLL.SearchFileByAssignIDAndUserID(assignID,UserID);
+                string file = "";
+                while (read.Read())
+                {
+                    if (read["Path"].ToString() != "")
+                    {
+                        file += read["Path"].ToString() + ",";
+                       
+                    }
+                }
                 UpdateAssignID.Text = assignID.ToString();
                 UpdateBigTitle.Text = bigTitle;
                 UpdateSmallTitle.Text = smallTitle;
                 UpdateReplyMemo.InnerText = updateReplyMemo;
                 UpdateMemo.InnerText = updateMemo;
+                string path2 = file.Replace("~/File/", "");
+                UploadFile.InnerText= path2;
                 RegisterJS(@"
                   $('#DealSuperviseMxModal').modal({
                     show: true,
                     backdrop: 'static'
                 });", this);
+            }else if (e.CommandName=="openSearchFiles")
+            {
+                UploadBLL uploadBLL = new UploadBLL();
+                int AssignID = int.Parse(e.CommandArgument.ToString());
+                DataSet ds = new DataSet();
+                ds = uploadBLL.SearchFileByAssignID(AssignID);
+                DataView dv = ds.Tables[0].DefaultView;
+                FileGridView.DataSource = dv;
+                FileGridView.DataBind();
+                RegisterJS(@"
+                $('#FileModal').modal({
+                    show: true,
+                    backdrop: 'static'
+                }); ", this); 
             }
-           
+
         }
         #endregion
         //控制前台JS的代码
@@ -677,11 +745,11 @@ namespace NewSupersive.Admin
             string str = Request.Params["ModifySetStaff"];
             int assignID = int.Parse(ModifyAssignID.Text);
             R_SuperviseAssign superviseAssign2 = superviseAssignBLL.FindSuperviseAssign(assignID);
+            int mxID = 0;
             if (str == null || str == "")
             {//如果新建任务未分派 则 处理人依然是分派的部门 
-                num = superviseMxBLL.AddSuperviseMx(superviseMx);//新增小任务成功
-                int mxID = superviseMxBLL.FindSuperviseMxID(Request.Params["ModifyTitle"]);//新增成功返回MxID   用来分派 
-                if (FinishDate == null || FinishDate == ""|| superviseMx.Title==""|| superviseMx.Title==null)
+
+                if (FinishDate == null || FinishDate == "" || superviseMx.Title == "" || superviseMx.Title == null)
                 {
                     Page.ClientScript.RegisterStartupScript(this.GetType(), "", "SetStyle()", true);
                     return;
@@ -690,11 +758,12 @@ namespace NewSupersive.Admin
                 {
                     superviseMx.FinishDate = DateTime.Parse(FinishDate);
                     num = superviseMxBLL.AddSuperviseMx(superviseMx);//新增小任务成功
+                    mxID = superviseMxBLL.FindSuperviseMxID(Request.Params["ModifyTitle"]);//新增成功返回MxID   用来分派 
                 }
-                R_SuperviseAssign superviseAssign = superviseAssignBLL.FindSuperviseAssign(assignID);
+                R_SuperviseAssign superviseAssign = new R_SuperviseAssign();
                 superviseAssign.RID = int.Parse(Request.Params["ModifyRID"]);
                 superviseAssign.MxID = mxID;
-                superviseAssign.AssignNo = superviseAssign.AssignNo;
+                superviseAssign.AssignNo = user.UserID;
                 superviseAssign.ReplyMemo = "";
                 superviseAssign.bSate = 0;
                 superviseAssign.Memo = "";
@@ -706,10 +775,20 @@ namespace NewSupersive.Admin
             }
             else if (str != "" || str != null)
             {
+                //如果分派 跟进人是分派的员工
                 string srt2 = str.Trim(',');
                 string[] sArray = srt2.Split(',');
-                num = superviseMxBLL.AddSuperviseMx(superviseMx);//新增小任务成功
-                int mxID = superviseMxBLL.FindSuperviseMxID(Request.Params["ModifyTitle"]);//新增成功返回MxID   用来分派 
+                if (FinishDate == null || FinishDate == "" || superviseMx.Title == "" || superviseMx.Title == null)
+                {
+                    Page.ClientScript.RegisterStartupScript(this.GetType(), "", "SetStyle()", true);
+                    return;
+                }
+                else
+                {
+                    superviseMx.FinishDate = DateTime.Parse(FinishDate);
+                    num = superviseMxBLL.AddSuperviseMx(superviseMx);//新增小任务成功
+                    mxID = superviseMxBLL.FindSuperviseMxID(Request.Params["ModifyTitle"]);//新增成功返回MxID   用来分派 
+                }
                 R_SuperviseAssign superviseAssign = superviseAssignBLL.FindSuperviseAssign(assignID);
                 superviseAssign.RID = int.Parse(Request.Params["ModifyRID"]);
                 superviseAssign.MxID = mxID;
@@ -728,7 +807,6 @@ namespace NewSupersive.Admin
             if (num != 0)
             {
                 Response.Write("<script language='javascript'>alert('新增任务成功!')</script>");
-                LoadData();
                 Page_Load(sender, e);
             }
             else
@@ -753,6 +831,8 @@ namespace NewSupersive.Admin
             superviseAssign.Mender = userInFo.UserID;
             superviseAssign.MendDate = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd"));
             int num = superviseAssignBLL.updateSuperviseAssign(superviseAssign);
+
+
             R_SuperviseAssign superviseAssignDeparament = superviseAssignBLL.FindSuperviseAssign(superviseAssign.AssignID);
             if (num != 0)
             {
@@ -778,6 +858,7 @@ namespace NewSupersive.Admin
         protected void SaveBigTitle_Click(object sender, EventArgs e)
         {
             SuperviseBLL superviseBLL = new SuperviseBLL();
+            SuperviseAssignBLL superviseAssignBLL = new SuperviseAssignBLL();
             R_Supervise supervise = superviseBLL.FindSupervise(int.Parse(ModiyRID.Text));
             supervise.SuperviseType = int.Parse(ModifyTypeList.SelectedValue);
             supervise.Title = Request.Params["ModifyBigTitle2"];
@@ -788,30 +869,50 @@ namespace NewSupersive.Admin
             {
                 user = (S_UserInFo)Session["User"];
                 user.ToString();
+                supervise.Mender = user.UserID;
             }
             catch (Exception s)
             {
                 Response.Redirect("Login.aspx");
             }
-            try
-            {
-                supervise.Mender = user.UserID;
-            }
-            catch (Exception ex)
-            {
-                Response.Redirect("Login.aspx");
-            }
             supervise.MendDate = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd"));
-            if (supervise.Title == null|| supervise.Title == "")
+            if (supervise.Title == null || supervise.Title == "")
             {
                 Page.ClientScript.RegisterStartupScript(this.GetType(), "", "SetStyle()", true);
                 return;
             }
             else
             {
-                num = superviseBLL.UpdateSupervise(supervise);
+                if (Session["OldAssignNo"].ToString().Equals(Request.Params["SetDeptCharge2"]))
+                {
+                    num = superviseBLL.UpdateSupervise(supervise);
+                }
+                else
+                {
+                    num = superviseBLL.UpdateSupervise(supervise);
+                    string OldAssignSrt2 = Session["OldAssignNo"].ToString().Trim(',');//分割旧的部门主管
+                    string[] OldsArray = OldAssignSrt2.Split(',');
+                    string NewAssignSrt2 = Request.Params["SetDeptCharge2"].Trim(',');//分割新的部门主管
+                    string[] NewsArray = NewAssignSrt2.Split(',');
+                    foreach (string item in NewsArray) //遍历intA中的元素
+                    {
+                        if (!OldsArray.Contains(item))//假如intA中的元素tem不包含在intB中
+                        {
+                            R_SuperviseAssign superviseAssign = new R_SuperviseAssign();
+                            superviseAssign.RID = int.Parse(ModiyRID.Text);
+                            superviseAssign.MxID = int.Parse(ModifyMxID2.Text);
+                            superviseAssign.ReplyMemo = "";
+                            superviseAssign.bSate = 0;
+                            superviseAssign.Memo = "";
+                            superviseAssign.Mender = user.UserID;
+                            superviseAssign.MendDate = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd"));
+                            superviseAssign.AssignNo = item;
+                            superviseAssignBLL.DeleteSuperviseAssignByRIDandAssignNozero(int.Parse(ModiyRID.Text));
+                            num = superviseAssignBLL.AddsuperviseAssign(superviseAssign);
+                        }
+                    }
+                }
             }
-         
             if (num != 0)
             {
                 Response.Write("<script language='javascript'>alert('更新成功!')</script>");
@@ -844,13 +945,37 @@ namespace NewSupersive.Admin
             string FinishDate = Request.Params["ModifyFinishDate2"].ToString();
             superviseMx.Mender = user.UserID;
             superviseMx.MendDate = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd"));
-            if (superviseMx.Title == null || superviseMx.Title == ""|| FinishDate==null|| FinishDate=="")
+            if (superviseMx.Title == null || superviseMx.Title == "" || FinishDate == null || FinishDate == "")
             {
                 Page.ClientScript.RegisterStartupScript(this.GetType(), "", "SetStyle()", true);
                 return;
-            }else {
+            }
+            else
+            {
                 superviseMx.FinishDate = DateTime.Parse(FinishDate);
-                num = superviseMxBLL.UpdateSuperviseMx(superviseMx);
+                superviseMxBLL.UpdateSuperviseMx(superviseMx);
+                string OldAssignStr2 = Session["OldStaff"].ToString().Trim(',');//分割旧的部门主管
+                string[] OldsArray = OldAssignStr2.Split(',');
+                string NewAssignStr2 = Request.Params["ModifySetStaff2"].Trim(',');//分割新的部门主管
+                string[] NewsArray = NewAssignStr2.Split(',');
+                foreach (string item in NewsArray) //遍历intA中的元素
+                {
+                    if (!OldsArray.Contains(item))//假如intA中的元素tem不包含在intB中
+                    {
+                        R_SuperviseAssign superviseAssign = new R_SuperviseAssign();
+                        superviseAssign.RID = int.Parse(ModifyRID3.Text);
+                        superviseAssign.MxID = int.Parse(ModifyMxID.Text);
+                        superviseAssign.ReplyMemo = "";
+                        superviseAssign.bSate = 0;
+                        superviseAssign.Memo = "";
+                        superviseAssign.Mender = user.UserID;
+                        superviseAssign.MendDate = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd"));
+                        superviseAssign.AssignNo = item;
+                        SuperviseAssignBLL superviseAssignBLL = new SuperviseAssignBLL();
+                        superviseAssignBLL.DeleteSuperviseAssignByRIDandAssignNozero(int.Parse(ModifyRID3.Text));
+                        num = superviseAssignBLL.AddsuperviseAssign(superviseAssign);
+                    }
+                }
             }
             if (num != 0)
             {
@@ -913,5 +1038,62 @@ namespace NewSupersive.Admin
         /// </summary>
         /// <param name="control"></param>
         public override void VerifyRenderingInServerForm(Control control) { }
+
+        protected void FileGridView_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            if (e.CommandName == "DownLoadFile_Click")
+            {
+                string filePath = e.CommandArgument.ToString();
+                filePath = Server.MapPath(System.Configuration.ConfigurationManager.AppSettings["AttachmentPath"] + filePath);
+                string fileName = Path.GetFileName(filePath);
+
+                FileStream fs = new FileStream(filePath, FileMode.Open);
+                byte[] bytes = new byte[(int)fs.Length];   //以字符流的形式下载文件
+                fs.Read(bytes, 0, bytes.Length);
+                fs.Close();
+                Response.Charset = "UTF-8";
+                Response.ContentEncoding = System.Text.Encoding.GetEncoding("UTF-8");
+                Response.ContentType = "application/octet-stream";  //通知浏览器下载文件而不是打开
+
+                Response.AddHeader("Content-Disposition", "attachment; filename=" + Server.UrlEncode(fileName));
+                Response.BinaryWrite(bytes);
+                Response.Flush();
+                Response.End();
+            }
+            else if (e.CommandName == "DeleteFile_Click")
+            {
+                string userID = Session["UserID"].ToString();
+                string[] commandArgument = e.CommandArgument.ToString().Split(',');
+                int ID = int.Parse( commandArgument[0].ToString());
+                string UserID = commandArgument[1];
+                if (userID.Equals(UserID)){
+                    UploadBLL uploadBLL = new UploadBLL();
+                    int num=uploadBLL.DeleteFileByID(ID);
+                    if (num == 0)
+                    {
+                        Response.Write("<script language='javascript'>alert('删除附件成功!')</script>");
+                    }
+                }
+                else
+                {
+                    Response.Write("<script language='javascript'>alert('无权限!')</script>");
+                }
+            }
+        }
+
+        protected void FileGridView_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow || e.Row.RowType == DataControlRowType.Header)
+            {
+                
+                //动态序号
+                if (e.Row.RowIndex != -1)
+                {
+                    int indexID = this.gridView.PageIndex * this.gridView.PageSize + e.Row.RowIndex + 1;
+                    e.Row.Cells[0].Text = indexID.ToString();
+                }
+                e.Row.Cells[1].Visible = false;
+                }
+            }
     }
 }

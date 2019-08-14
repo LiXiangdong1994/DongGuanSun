@@ -80,5 +80,15 @@ namespace BLL
         {
             return SuperviseAssignDAL.DeleteSuperviseAssignByMxIDAndAssign(mxID, assignID);
         }
+
+        public SqlDataReader FindSuperviseAssignByRID(int rID)
+        {
+            return SuperviseAssignDAL.FindSuperviseAssignByRID(rID);
+        }
+
+        public int DeleteSuperviseAssignByRIDandAssignNozero(int rID)
+        {
+            return SuperviseAssignDAL.DeleteSuperviseAssignByRIDandAssignNozero(rID);
+        }
     }
 }

@@ -232,6 +232,7 @@
     <Content Include="Scripts\esm\popper.js.map" />
     <Content Include="Scripts\esm\popper-utils.min.js.map" />
     <Content Include="Scripts\esm\popper-utils.js.map" />
+    <Content Include="Admin\Upload.ashx" />
     <None Include="Scripts\jquery-3.0.0-vsdoc.js" />
     <Content Include="Scripts\jquery-3.0.0.js" />
     <Content Include="Scripts\jquery-3.0.0.min.js" />
@@ -429,6 +430,9 @@
     <Compile Include="Admin\tables.aspx.designer.cs">
       <DependentUpon>tables.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Admin\Upload.ashx.cs">
+      <DependentUpon>Upload.ashx</DependentUpon>
+    </Compile>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="About.aspx.cs">
       <DependentUpon>About.aspx</DependentUpon>
@@ -486,6 +490,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="assets\" />
     <Folder Include="docs\" />
+    <Folder Include="File\" />
     <Folder Include="Scripts\layui\" />
   </ItemGroup>
   <ItemGroup>

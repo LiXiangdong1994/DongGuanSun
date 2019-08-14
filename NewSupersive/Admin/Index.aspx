@@ -87,7 +87,7 @@
 							<a data-toggle="dropdown" href="#" class="dropdown-toggle">
 								<img class="nav-user-photo" src="../assets/avatars/user.jpg" alt="Jason's Photo" />
 								<span class="user-info">
-									<small>Welcome,</small>
+									<small>欢迎,</small>
 									<span id="UserName">Jason</span>
 								</span>
 
@@ -95,24 +95,24 @@
 							</a>
 
 							<ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
-								<li>
+								<%--<li>
 									<a href="#">
 										<i class="ace-icon fa fa-cog"></i>
 										Settings
 									</a>
-								</li>
+								</li>--%>
 
-								<li>
+								<%--<li>
 									<a href="profile.html">
 										<i class="ace-icon fa fa-user"></i>
 										Profile
 									</a>
-								</li>
+								</li>--%>
 
 								<li class="divider"></li>
 
 								<li>
-                                    <asp:LinkButton ID="Logout" runat="server" OnClick="GoLogout_Click"><i class="ace-icon fa fa-power-off"></i>Logout</asp:LinkButton>
+                                    <asp:LinkButton ID="Logout" runat="server" OnClick="GoLogout_Click"><i class="ace-icon fa fa-power-off"></i>登录/退出</asp:LinkButton>
 								</li>
 							</ul>
 						</li>
@@ -136,39 +136,6 @@
 				<script type="text/javascript">
 					try{ace.settings.check('sidebar' , 'fixed')}catch(e){}
 				</script>
-
-		<%--		<div class="sidebar-shortcuts" id="sidebar-shortcuts">
-					<div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
-						<button class="btn btn-success">
-							<i class="ace-icon fa fa-signal"></i>
-						</button>
-
-						<button class="btn btn-info">
-							<i class="ace-icon fa fa-pencil"></i>
-						</button>
-
-						<!-- #section:basics/sidebar.layout.shortcuts -->
-						<button class="btn btn-warning">
-							<i class="ace-icon fa fa-users"></i>
-						</button>
-
-						<button class="btn btn-danger">
-							<i class="ace-icon fa fa-cogs"></i>
-						</button>
-
-						<!-- /section:basics/sidebar.layout.shortcuts -->
-					</div>
-
-					<div class="sidebar-shortcuts-mini" id="sidebar-shortcuts-mini">
-						<span class="btn btn-success"></span>
-
-						<span class="btn btn-info"></span>
-
-						<span class="btn btn-warning"></span>
-
-						<span class="btn btn-danger"></span>
-					</div>
-				</div><!-- /.sidebar-shortcuts -->--%>
 
 				<ul class="nav nav-list">
 					<li class="active">
@@ -221,18 +188,7 @@
 							</li>
 							<li class="active title_change"></li>
 						</ul><!-- /.breadcrumb -->
-
-						<!-- #section:basics/content.searchbox -->
-						<%--<div class="nav-search" id="nav-search">
-							<form class="form-search">
-								<span class="input-icon">
-									<input type="text" placeholder="Search ..." class="nav-search-input" id="nav-search-input" autocomplete="off" />
-									<i class="ace-icon fa fa-search nav-search-icon"></i>
-								</span>
-							</form>
-						</div>--%><!-- /.nav-search -->
-
-						<!-- /section:basics/content.searchbox -->
+						
 					</div>
 
 					<!-- /section:basics/content.breadcrumbs -->
@@ -255,22 +211,7 @@
 						<div class="row">
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
-								<div class="alert alert-block alert-success">
-									<button type="button" class="close" data-dismiss="alert">
-										<i class="ace-icon fa fa-times"></i>
-									</button>
-
-									<i class="ace-icon fa fa-check green"></i>
-
-									Welcome to
-									<strong class="green">
-										Ace
-										<small>(v1.3.4)</small>
-									</strong>,
-	the lightweight, feature-rich and easy to use admin template.
-								</div>
-
-								<div class="row" style="height:1000px;">
+								<div class="row" style="height:1500px;">
 									
 
 								      <div class="layui-body content" style="position:absolute;top:60px;">
@@ -287,7 +228,7 @@
 					<div class="footer-content">
 						<span class="bigger-120">
 							<span class="blue bolder">Ace</span>
-							Application &copy; 2013-2014
+							Application &copy; 2019
 						</span>
 
 						&nbsp; &nbsp;

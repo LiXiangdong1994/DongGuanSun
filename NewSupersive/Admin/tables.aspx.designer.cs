@@ -121,24 +121,6 @@ namespace NewSupersive.Admin {
         protected global::System.Web.UI.WebControls.Label Label1;
         
         /// <summary>
-        /// gridView3 控件。
-        /// </summary>
-        /// <remarks>
-        /// 自动生成的字段。
-        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gridView3;
-        
-        /// <summary>
-        /// Label4 控件。
-        /// </summary>
-        /// <remarks>
-        /// 自动生成的字段。
-        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label4;
-        
-        /// <summary>
         /// AddTypeList 控件。
         /// </summary>
         /// <remarks>
@@ -220,6 +202,15 @@ namespace NewSupersive.Admin {
         protected global::System.Web.UI.WebControls.TextBox ModiyRID;
         
         /// <summary>
+        /// ModifyMxID2 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox ModifyMxID2;
+        
+        /// <summary>
         /// ModifyBigTitle2 控件。
         /// </summary>
         /// <remarks>
@@ -236,6 +227,24 @@ namespace NewSupersive.Admin {
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ModifyUrgencyList;
+        
+        /// <summary>
+        /// SetDepartment2 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox SetDepartment2;
+        
+        /// <summary>
+        /// SetDeptCharge2 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox SetDeptCharge2;
         
         /// <summary>
         /// gridView2 控件。
@@ -310,6 +319,24 @@ namespace NewSupersive.Admin {
         protected global::System.Web.UI.WebControls.TextBox ModifySetStaff;
         
         /// <summary>
+        /// ModifySuperiseAssignID 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox ModifySuperiseAssignID;
+        
+        /// <summary>
+        /// ModifyRID3 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox ModifyRID3;
+        
+        /// <summary>
         /// ModifyBigTitle3 控件。
         /// </summary>
         /// <remarks>
@@ -344,6 +371,15 @@ namespace NewSupersive.Admin {
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox ModifyFinishDate2;
+        
+        /// <summary>
+        /// ModifySetStaff2 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox ModifySetStaff2;
         
         /// <summary>
         /// gridView1 控件。
@@ -416,5 +452,23 @@ namespace NewSupersive.Admin {
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList UpdateBSate;
+        
+        /// <summary>
+        /// UploadFile 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTextArea UploadFile;
+        
+        /// <summary>
+        /// FileGridView 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView FileGridView;
     }
 }

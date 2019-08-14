@@ -12,7 +12,15 @@ namespace NewSupersive.Admin
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-          
+            try {
+                S_UserInFo user = (S_UserInFo)Session["User"];
+                user.ToString();
+            } catch (Exception ex)
+            {
+                Response.Redirect("Login.aspx");
+            }
+           
+
         }
         protected void GoLogout_Click(object sender,EventArgs e)
         {

@@ -45,6 +45,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SuperviseDAL.cs" />
     <Compile Include="SuperviseMxDAL.cs" />
+    <Compile Include="UploadDAL.cs" />
     <Compile Include="UserDAL.cs" />
     <Compile Include="SuperviseAssignDAL.cs" />
   </ItemGroup>

@@ -20,7 +20,7 @@
 		<![endif]-->
 		<link rel="stylesheet" href="../assets/css/ace-rtl.css" />
 </head>
-<body class="login-layout">
+<body class="login-layout blur-login">
     <form id="form1" runat="server">
     div class="main-container">
 			<div class="main-content">
@@ -44,7 +44,7 @@
 										<div class="widget-main">
 											<h4 class="header blue lighter bigger">
 												<i class="ace-icon fa fa-coffee green"></i>
-												Please Enter Your Information
+											    请填写登录信息
 											</h4>
 
 											<div class="space-6"></div>
@@ -68,19 +68,19 @@
 
 													<div class="clearfix">
 														<label class="inline">
-															<input type="checkbox" class="ace" />
-															<span class="lbl"> Remember Me</span>
+															<%--<input type="checkbox" class="ace" />
+															<span class="lbl"> Remember Me</span>--%>
 														</label>
 														<button type="button" class="width-35 pull-right btn btn-sm btn-primary" runat="server" id="GoLogin">
 															<i class="ace-icon fa fa-key"></i>
-															<span class="bigger-110">Login</span>
+															<span class="bigger-110">登录</span>
 														</button>
 													</div>
 
 													<div class="space-4"></div>
 												</fieldset>
 
-											<div class="social-or-login center">
+											<%--<div class="social-or-login center">
 												<span class="bigger-110">Or Login Using</span>
 											</div>
 
@@ -98,10 +98,10 @@
 												<a class="btn btn-danger">
 													<i class="ace-icon fa fa-google-plus"></i>
 												</a>
-											</div>
+											</div>--%>
 										</div><!-- /.widget-main -->
 
-										<div class="toolbar clearfix">
+										<%--<div class="toolbar clearfix">
 											<div>
 												<a href="#" data-target="#forgot-box" class="forgot-password-link">
 													<i class="ace-icon fa fa-arrow-left"></i>
@@ -115,7 +115,7 @@
 													<i class="ace-icon fa fa-arrow-right"></i>
 												</a>
 											</div>
-										</div>
+										</div>--%>
 									</div><!-- /.widget-body -->
 								</div><!-- /.login-box -->
 
@@ -236,21 +236,6 @@
 									</div><!-- /.widget-body -->
 								</div><!-- /.signup-box -->
 							</div><!-- /.position-relative -->
-
-							<div class="navbar-fixed-top align-right">
-								<br />
-								&nbsp;
-								<a id="btn-login-dark" href="#">Dark</a>
-								&nbsp;
-								<span class="blue">/</span>
-								&nbsp;
-								<a id="btn-login-blur" href="#">Blur</a>
-								&nbsp;
-								<span class="blue">/</span>
-								&nbsp;
-								<a id="btn-login-light" href="#">Light</a>
-								&nbsp; &nbsp; &nbsp;
-							</div>
 						</div>
 					</div><!-- /.col -->
 				</div><!-- /.row -->
@@ -289,30 +274,6 @@
 			
 			
 			
-			//you don't need this, just used for changing background
-			jQuery(function($) {
-			 $('#btn-login-dark').on('click', function(e) {
-				$('body').attr('class', 'login-layout');
-				$('#id-text2').attr('class', 'white');
-				$('#id-company-text').attr('class', 'blue');
-				
-				e.preventDefault();
-			 });
-			 $('#btn-login-light').on('click', function(e) {
-				$('body').attr('class', 'login-layout light-login');
-				$('#id-text2').attr('class', 'grey');
-				$('#id-company-text').attr('class', 'blue');
-				
-				e.preventDefault();
-			 });
-			 $('#btn-login-blur').on('click', function(e) {
-				$('body').attr('class', 'login-layout blur-login');
-				$('#id-text2').attr('class', 'white');
-				$('#id-company-text').attr('class', 'light-blue');
-				
-				e.preventDefault();
-			 });
-			 
-			});
+			
 			
 		</script>

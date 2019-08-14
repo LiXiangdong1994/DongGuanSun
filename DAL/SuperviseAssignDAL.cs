@@ -86,6 +86,36 @@ namespace DAL
             }
         }
 
+        public static SqlDataReader FindSuperviseAssignByRID(int rID)
+        {
+            string sql = "select R_SuperviseAssign.AssignNo,(select DeptName from vwS_UserInFo where R_SuperviseAssign.AssignNo=UserID)  as DeptName from R_SuperviseAssign  where RID='{0}'";
+            sql = string.Format(sql, rID);
+            try
+            {
+                SqlDataReader read = DbHelperSQL.ExecuteReader(sql);
+                return read;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public static int DeleteSuperviseAssignByRIDandAssignNozero(int rID)
+        {
+            string sql = "delete from  R_SuperviseAssign where RID={0} and AssignNo=''";
+            sql = string.Format(sql, rID);
+            try
+            {
+                int num = DbHelperSQL.ExecuteSql(sql);
+                return num;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
         public static int DeleteSuperviseAssignByRID(string rID)
         {
             string sql = "delete from  R_SuperviseAssign where RID={0}";
@@ -103,14 +133,16 @@ namespace DAL
 
         public static DataSet FindSuperviseAssignByMore(List<string> listWhere)
         {
-            string sql = "select * from vwR_SuperviseAssign ";
+            string sql = "select * ,(select vwR_SuperviseAssign.DeptName+'(部长：'+vwS_UserInFo.UserID+')' from vwS_UserInFo where vwS_UserInFo.DeptName=vwR_SuperviseAssign.DeptName and vwS_UserInFo.Power=0) as bing from vwR_SuperviseAssign";
             DataSet set = null;
             if (listWhere.Count > 0)
             {
                 string sqlWhere = string.Join(" and ", listWhere.ToArray());
                 sql = sql + " where " + sqlWhere+ "order by RID asc";
-            } else {
-                sql = "select *  from vwR_SuperviseAssign order by RID asc";
+            }
+            else
+            {
+                sql = "select * ,(select vwR_SuperviseAssign.DeptName+'(部长：'+vwS_UserInFo.UserID+')' from vwS_UserInFo where vwS_UserInFo.DeptName=vwR_SuperviseAssign.DeptName and vwS_UserInFo.Power=0) as bing from vwR_SuperviseAssign order by RID asc";
             }
             try
             {
